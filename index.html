@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email QA Form Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background-color: #001F3F;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    form {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #0074D9;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    @media (max-width: 600px) {
+      form {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Email Campaign QA Form</h1>
+  </header>
+
+  <form id="qaForm">
+    <div class="form-group"><label for="createDate">Create Date</label><input type="text" id="createDate" name="Create Date" readonly /></div>
+    <div class="form-group"><label for="filledBy">Form Filled By</label><input type="text" id="filledBy" name="Form Filled By" /></div>
+    <div class="form-group"><label for="clientName">Client Name</label><input type="text" id="clientName" name="Client Name" /></div>
+    <div class="form-group"><label for="campaignType">Campaign Type</label><input type="text" id="campaignType" name="Campaign Type" /></div>
+    <div class="form-group"><label for="jobType">Job Type</label><input type="text" id="jobType" name="Job Type" /></div>
+    <div class="form-group"><label for="noOfEmails">No of Emails</label><input type="number" id="noOfEmails" name="No of Emails" /></div>
+    <div class="form-group"><label for="emailName">Email/SMS/Automation Name</label><input type="text" id="emailName" name="Email/SMS/Automation Name" /></div>
+    <div class="form-group"><label for="esp">ESP</label><input type="text" id="esp" name="ESP" /></div>
+    <div class="form-group"><label for="fromName">From Name</label><input type="text" id="fromName" name="From Name" /></div>
+    <div class="form-group"><label for="fromEmail">From Email Address</label><input type="email" id="fromEmail" name="From Email Address" /></div>
+    <div class="form-group"><label for="replyToEmail">Reply-to Email Address</label><input type="email" id="replyToEmail" name="Reply-to Email Address" /></div>
+    <div class="form-group"><label for="subjectLine">Subject Line</label><input type="text" id="subjectLine" name="Subject Line" /></div>
+    <div class="form-group"><label for="previewText">Preview Text</label><input type="text" id="previewText" name="Preview Text" /></div>
+    <div class="form-group"><label for="abTest">A/B Testing</label><input type="text" id="abTest" name="A/B Testing" /></div>
+    <div class="form-group"><label for="abDetails">A/B Test Details</label><textarea id="abDetails" name="A/B Test Details"></textarea></div>
+    <div class="form-group"><label for="mainList">Main List</label><input type="text" id="mainList" name="Main List" /></div>
+    <div class="form-group"><label for="segment">Segment</label><input type="text" id="segment" name="Segment" /></div>
+    <div class="form-group"><label for="count">Count (After Suppression)</label><input type="text" id="count" name="Count (After Suppression)" /></div>
+    <div class="form-group"><label for="campaignDate">Campaign Date</label><input type="date" id="campaignDate" name="Campaign Date" /></div>
+    <div class="form-group"><label for="campaignTime">Campaign Time</label><input type="time" id="campaignTime" name="Campaign Time" /></div>
+    <div class="form-group"><label for="testEmail">Test Email List/Person</label><input type="email" id="testEmail" name="Test Email List/Person" /></div>
+    <div class="form-group"><label><input type="checkbox" name="Link Check" /> Link Check</label></div>
+    <div class="form-group"><label><input type="checkbox" name="Content Error Check" /> Content Error Check</label></div>
+    <div class="form-group"><label><input type="checkbox" name="Alt Tag Check" /> Alt Tag Check</label></div>
+    <div class="form-group"><label for="promoCode">Promo Code?</label><input type="text" id="promoCode" name="Promo code?" /></div>
+    <div class="form-group"><label><input type="checkbox" name="CAN-SPAM Compliant" /> CAN-SPAM Compliant</label></div>
+    <div class="form-group"><label><input type="checkbox" name="Unsubscribe Link" /> Unsubscribe Link</label></div>
+    <div class="form-group"><label><input type="checkbox" name="Salutation(First Name)" /> Salutation (First Name)</label></div>
+    <div class="form-group"><label for="spf">SPF</label><select id="spf" name="SPF"><option>PASS</option><option>FAIL</option></select></div>
+    <div class="form-group"><label for="dkim">DKIM</label><select id="dkim" name="DKIM"><option>PASS</option><option>FAIL</option></select></div>
+    <div class="form-group"><label for="dmarc">DMARC</label><select id="dmarc" name="DMARC"><option>PASS</option><option>FAIL</option></select></div>
+    <div class="form-group"><label><input type="checkbox" name="UTM Tracking?" /> UTM Tracking?</label></div>
+    <div class="form-group"><label for="liveLink">Live Campaign Link</label><input type="text" id="liveLink" name="Live Campaign Link" /></div>
+    <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA" /></div>
+    <div class="form-group"><label for="renderingIssues">Any Rendering Issues</label><textarea id="renderingIssues" name="Any Rendering Issues - Device Name + Platform"></textarea></div>
+    <div class="form-group"><label for="approval">Campaign Approval</label><input type="text" id="approval" name="Campaign Approval" /></div>
+    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById('createDate').value = new Date().toLocaleString();
+    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+    const form = document.getElementById('qaForm');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => alert('Form submitted successfully'))
+        .catch(error => alert('Error submitting form'));
+    });
+  </script>
+</body>
+</html>
