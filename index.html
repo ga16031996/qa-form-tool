@@ -103,21 +103,57 @@
     <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA" /></div>
     <div class="form-group"><label for="renderingIssues">Any Rendering Issues</label><textarea id="renderingIssues" name="Any Rendering Issues - Device Name + Platform"></textarea></div>
     <div class="form-group"><label for="approval">Campaign Approval</label><input type="text" id="approval" name="Campaign Approval" /></div>
-    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div>
-    <button type="submit">Submit</button>
-  </form>
+    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div><br>
+<input type="hidden" name="Submission Time" id="submissionTime" /><br>
+<button type="submit" id="submitBtn">Submit</button>
+</form>
+
 
   <script>
-    document.getElementById('createDate').value = new Date().toLocaleString();
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzTgsq5mbuBPERO7nvDLyp-jIp-WLIr2IuXbv21jmm0l8Yok8oGt6MGqbhDkbgbuWutJQ/exec';
-    const form = document.getElementById('qaForm');
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzTgsq5mbuBPERO7nvDLyp-jIp-WLIr2IuXbv21jmm0l8Yok8oGt6MGqbhDkbgbuWutJQ/exec';
+  const form = document.forms['qa-form'];
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-        .then(response => alert('Form submitted successfully'))
-        .catch(error => alert('Error submitting form'));
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    // Validate required fields (add or update as needed)
+    const requiredFields = ['Form Filled By', 'Client Name'];
+    let valid = true;
+
+    requiredFields.forEach(fieldName => {
+      const field = form.querySelector(`[name="${fieldName}"]`);
+      if (field && !field.value.trim()) {
+        field.style.border = '2px solid red';
+        valid = false;
+      } else if (field) {
+        field.style.border = '';
+      }
     });
-  </script>
+
+    if (!valid) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Set submission time before sending
+    document.getElementById('submissionTime').value = new Date().toLocaleString();
+
+    const formData = new FormData(form);
+    fetch(scriptURL, { method: 'POST', body: formData })
+      .then(response => {
+        alert("Form submitted successfully!");
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Error!', error.message);
+        alert("There was an error submitting the form.");
+      });
+  });
+</script>
+
+
+
+
+
 </body>
 </html>
