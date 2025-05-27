@@ -104,49 +104,121 @@
     <div class="form-group"><label for="renderingIssues">Any Rendering Issues</label><textarea id="renderingIssues" name="Any Rendering Issues - Device Name + Platform"></textarea></div>
     <div class="form-group"><label for="approval">Campaign Approval</label><input type="text" id="approval" name="Campaign Approval" /></div>
     <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div><br>
-<input type="hidden" name="Submission Time" id="submissionTime" />
-    <button type="submit">Submit</button>
-  </form>
+<input type="hidden" name="Submission Time" id="submissionTime" /><br>
+<input type="hidden" name="Form Status" id="formStatus" />
+<input type="text" name="Submission ID" id="submissionId" hidden readonly /><br>
+<input type="text" name="Unique Response ID" id="uniqueResponseId" hidden readonly />
+<button type="submit" id="submitBtn">Submit</button>
+  <button type="button" id="saveBtn">Save</button><br><br>
+  <button type="button" id="editBtn">Edit</button>
+
+</form>
+<div id="fetch-section">
+  <label for="searchResponseId">Enter Unique Response ID to Edit</label>
+  <input type="text" id="searchResponseId" />
+  <button type="button" id="fetchDataBtn">Fetch Data</button>
+</div>
 
   <script>
   const scriptURL = 'https://script.google.com/macros/s/AKfycbzTgsq5mbuBPERO7nvDLyp-jIp-WLIr2IuXbv21jmm0l8Yok8oGt6MGqbhDkbgbuWutJQ/exec';
   const form = document.forms['qa-form'];
+  const submissionIdField = document.getElementById('submissionId');
+  const uniqueResponseIdField = document.getElementById('uniqueResponseId');
+  const saveBtn = document.getElementById('saveBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const formStatus = document.getElementById('formStatus');
+  const submissionTime = document.getElementById('submissionTime');
+  const editBtn = document.getElementById('editBtn');
+  const fetchDataBtn = document.getElementById('fetchDataBtn');
+  const searchResponseId = document.getElementById('searchResponseId');
 
+  // Generate a unique Response ID if no ID exists
+  function generateUniqueResponseId() {
+    return 'RESP-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+  }
+
+  // If no Unique Response ID exists, generate one and keep it hidden until form is submitted
+  if (!uniqueResponseIdField.value) {
+    uniqueResponseIdField.value = generateUniqueResponseId();
+  }
+
+  // Show the Submission ID once the form is submitted
+  function showSubmissionId() {
+    submissionIdField.hidden = false; // Show the field after submission
+  }
+
+  // Save button logic
+  saveBtn.addEventListener('click', () => {
+    formStatus.value = 'Saved';
+    submissionTime.value = new Date().toLocaleString();
+    sendFormData();
+  });
+
+  // Submit button logic
   form.addEventListener('submit', e => {
     e.preventDefault();
+    formStatus.value = 'Submitted';
+    submissionTime.value = new Date().toLocaleString();
+    sendFormData();
+    showSubmissionId(); // Show the Submission ID after the form is submitted
+  });
 
-    // Validate required fields (add or update as needed)
-    const requiredFields = ['Form Filled By', 'Client Name'];
-    let valid = true;
-
-    requiredFields.forEach(fieldName => {
-      const field = form.querySelector(`[name="${fieldName}"]`);
-      if (field && !field.value.trim()) {
-        field.style.border = '2px solid red';
-        valid = false;
-      } else if (field) {
-        field.style.border = '';
-      }
-    });
-
-    if (!valid) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    // Set submission time before sending
-    document.getElementById('submissionTime').value = new Date().toLocaleString();
-
+  // Function to send form data to Google Sheets
+  function sendFormData() {
     const formData = new FormData(form);
     fetch(scriptURL, { method: 'POST', body: formData })
       .then(response => {
-        alert("Form submitted successfully!");
-        form.reset();
+        alert(`Form ${formStatus.value.toLowerCase()} successfully!`);
+        if (formStatus.value === 'Submitted') {
+          form.reset();
+        }
       })
       .catch(error => {
         console.error('Error!', error.message);
-        alert("There was an error submitting the form.");
+        alert("There was an error submitting/saving the form.");
       });
+  }
+
+  // --- Optional: Prefill form by Unique Response ID ---
+  fetchDataBtn.addEventListener('click', () => {
+    const searchId = searchResponseId.value.trim();
+    if (!searchId) {
+      alert("Please enter a Unique Response ID.");
+      return;
+    }
+
+    fetch(`https://script.google.com/macros/s/AKfycbzTgsq5mbuBPERO7nvDLyp-jIp-WLIr2IuXbv21jmm0l8Yok8oGt6MGqbhDkbgbuWutJQ/exec?id=${searchId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length) {
+          const formFields = form.elements;
+          data.forEach((field, index) => {
+            const fieldName = formFields[index].name;
+            if (fieldName && form.elements[fieldName]) {
+              form.elements[fieldName].value = field || '';
+            }
+          });
+          uniqueResponseIdField.value = searchId; // Prefill the Unique Response ID
+          submissionIdField.hidden = false; // Show the Submission ID
+        } else {
+          alert("No data found for this Unique Response ID.");
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data!', error);
+        alert("There was an error fetching the data.");
+      });
+  });
+
+  // Handle Edit Button Logic
+  editBtn.addEventListener('click', () => {
+    const responseId = uniqueResponseIdField.value;
+    if (responseId) {
+      // This logic can be used to show the form in an "edit mode" and prefill the form with saved data
+      alert(`Editing form with Response ID: ${responseId}`);
+    } else {
+      alert("No Response ID found. Please submit first.");
+    }
   });
 </script>
 
